@@ -1,0 +1,8 @@
+#!/bin/bash
+ARCHIVES="/abachi/Game Installers/Windows"
+export full_archive="$(find "$ARCHIVES" -maxdepth 1 -iname "$ARCHIVE")"
+
+function sandbox {
+mkdir -p "$HOME/.PlayOnLinux/shared-files"
+find $WINEPREFIX/drive_c/ -type l -exec sh -c 'rm "{}";ln -s "$HOME/.PlayOnLinux/shared-files/$(basename "{}")" "{}"' \;
+}
