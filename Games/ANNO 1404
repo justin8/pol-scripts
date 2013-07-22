@@ -40,8 +40,6 @@ extract "$full_archive" "$WINEPREFIX/drive_c/games/"
 POL_Call POL_Install_dxfullsetup
 POL_Call POL_Install_vcrun2005
 
-Set_Desktop "On"
-
 POL_Shortcut "Anno4.exe" "$TITLE"
 POL_Shortcut "Addon.exe" "$TITLE - Venice"
 
