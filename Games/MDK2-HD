@@ -6,7 +6,7 @@ DIR="$(dirname "$(readlink -f "$0")")"
 TITLE='MDK2 HD'
 PREFIX='mdk2hd'
 ARCHIVE='MDK2 HD*'
-. $DIR/.base
+. $DIR/../base
 
 
 POL_SetupWindow_Init

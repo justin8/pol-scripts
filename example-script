@@ -6,7 +6,7 @@ DIR="$(dirname "$(readlink -f "$0")")"
 TITLE='GAME'
 PREFIX='game'
 ARCHIVE='MDK2 HD*' #Can end in *; scripts will match up the file correctly, although only .rar is currently supported
-. $DIR/.base
+. $DIR/../base
 
 POL_SetupWindow_Init
 POL_Debug_Init
