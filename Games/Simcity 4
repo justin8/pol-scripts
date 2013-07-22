@@ -1,0 +1,46 @@
+#!/bin/bash
+[ "$PLAYONLINUX" = "" ] && exit 0
+source "$PLAYONLINUX/lib/sources"
+
+DIR="$(dirname "$(readlink -f "$0")")"
+TITLE='Simcity 4'
+PREFIX='simcity4'
+ARCHIVE='SimCity 4*'
+. $DIR/../base
+
+POL_SetupWindow_Init
+POL_Debug_Init
+POL_SetupWindow_presentation "$TITLE" "Maxis" "www.simcity.com/en_US/product/simcity4" "Justin8" "$PREFIX"
+
+POL_Wine_SelectPrefix "$PREFIX"
+POL_Wine_PrefixCreate #"1.6.0"
+
+Set_OS winxp
+
+sandbox
+
+POL_SetupWindow_InstallMethod "DOWNLOAD,LOCAL"
+mkdir -p "$WINEPREFIX/drive_c/games"
+
+if [ "$INSTALL_METHOD" = "LOCAL" ]
+then
+	POL_SetupWindow_browse "Please select the installation archive to install." "$TITLE installation"
+elif [ "$INSTALL_METHOD" = "DOWNLOAD" ]
+then
+	APP_ANSWER="$full_archive"
+fi
+
+# Install from archive
+POL_SetupWindow_wait "Installation in progress." "$TITLE installation"
+rm -rf "$WINEPREFIX/drive_c/games/*"
+extract "$full_archive" "$WINEPREFIX/drive_c/games/"
+[[ $? != 0 ]] && POL_Debug_Fatal
+#POL_Wine start /unix "$WINEPREFIX/drive_c/games/_regsetup.exe"
+
+# Install libraries
+Set_Desktop "On" "800" "600"
+
+POL_Shortcut "SC4.exe" "$TITLE" "" "-CustomResolution:enabled -r1920x1080x32 -intro:off -d:directx -CPUCount:2"
+
+POL_SetupWindow_Close
+exit
