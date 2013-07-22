@@ -13,6 +13,9 @@ case $ext in
 	.rar)
 		unrar x "$1" "$2"
 		;;
+	.tgz|.txz|.tlz)
+		tar -C "$2" -xvf "$1" >> /tmp/test
+		;;
 	*)
 		echo "Unsupported archive format."
 		;;
