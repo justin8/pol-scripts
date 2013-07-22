@@ -5,7 +5,7 @@ source "$PLAYONLINUX/lib/sources"
 DIR="$(dirname "$(readlink -f "$0")")"
 TITLE='ANNO 1404'
 PREFIX='anno1404'
-ARCHIVE='ANNO 1404*' #Can end in *; scripts will match up the file correctly, although only .rar is currently supported
+ARCHIVE='ANNO 1404*'
 . $DIR/../base
 
 POL_SetupWindow_Init
