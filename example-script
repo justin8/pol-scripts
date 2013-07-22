@@ -43,5 +43,6 @@ POL_Call POL_Install_dxfullsetup
 #             exe name     title  icon executable arguments
 POL_Shortcut "SC4.exe" "$TITLE" "" "-CustomResolution:enabled -r1920x1080x32 -d:opengl"
 
+POL_Wine_reboot
 POL_SetupWindow_Close
 exit

@@ -41,5 +41,6 @@ Set_Desktop "On" "640" "480"
 
 POL_Shortcut "Empires.exe" "$TITLE"
 
+POL_Wine_reboot
 POL_SetupWindow_Close
 exit

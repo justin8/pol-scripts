@@ -41,5 +41,6 @@ Set_Desktop "On" "800" "600"
 
 POL_Shortcut "SC4.exe" "$TITLE" "" "-CustomResolution:enabled -r1920x1080x32 -intro:off -d:directx -CPUCount:2"
 
+POL_Wine_reboot
 POL_SetupWindow_Close
 exit

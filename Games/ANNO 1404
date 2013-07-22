@@ -180,5 +180,6 @@ cat << EOF > "$WINEPREFIX/drive_c/users/$USER/Application Data/Ubisoft/Anno1404/
 EOF
 cp "$WINEPREFIX/drive_c/users/$USER/Application Data/Ubisoft/Anno1404/Config/Engine.ini" "$WINEPREFIX/drive_c/users/$USER/Application Data/Ubisoft/Anno1404Addon/Config/Engine.ini"
 
+POL_Wine_reboot
 POL_SetupWindow_Close
 exit

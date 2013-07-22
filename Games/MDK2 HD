@@ -42,5 +42,6 @@ POL_Call POL_Install_dxfullsetup
 
 POL_Shortcut "mdk2hd.exe" "$TITLE"
 
+POL_Wine_reboot
 POL_SetupWindow_Close
 exit
