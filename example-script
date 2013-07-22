@@ -40,7 +40,8 @@ extract "$full_archive" "$WINEPREFIX/drive_c/games/"
 # Install libraries
 POL_Call POL_Install_dxfullsetup
 
-POL_Shortcut "mdk2hd.exe" "$TITLE"
+#             exe name     title  icon executable arguments
+POL_Shortcut "SC4.exe" "$TITLE" "" "-CustomResolution:enabled -r1920x1080x32 -d:opengl"
 
 POL_SetupWindow_Close
 exit
