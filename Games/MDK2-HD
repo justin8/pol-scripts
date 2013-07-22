@@ -44,4 +44,3 @@ POL_Shortcut "mdk2hd.exe" "$TITLE"
 
 POL_SetupWindow_Close
 exit
-

@@ -33,7 +33,7 @@ fi
 # Install from archive
 POL_SetupWindow_wait "Installation in progress." "$TITLE installation"
 rm -rf "$WINEPREFIX/drive_c/games/*"
-unrar x "$full_archive" "$WINEPREFIX/drive_c/games/"
+extract "$full_archive" "$WINEPREFIX/drive_c/games/"
 [[ $? != 0 ]] && POL_Debug_Fatal
 #POL_Wine start /unix "$WINEPREFIX/drive_c/games/_regsetup.exe"
 
