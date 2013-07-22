@@ -1,0 +1,184 @@
+#!/bin/bash
+[ "$PLAYONLINUX" = "" ] && exit 0
+source "$PLAYONLINUX/lib/sources"
+
+DIR="$(dirname "$(readlink -f "$0")")"
+TITLE='ANNO 1404'
+PREFIX='anno1404'
+ARCHIVE='ANNO 1404*' #Can end in *; scripts will match up the file correctly, although only .rar is currently supported
+. $DIR/../base
+
+POL_SetupWindow_Init
+POL_Debug_Init
+POL_SetupWindow_presentation "$TITLE" "" "http://github.com/justin8/pol-scripts" "Justin8" "$PREFIX"
+
+POL_Wine_SelectPrefix "$PREFIX"
+POL_Wine_PrefixCreate #"1.6.0"
+
+Set_OS winxp
+
+sandbox
+
+POL_SetupWindow_InstallMethod "DOWNLOAD,LOCAL"
+mkdir -p "$WINEPREFIX/drive_c/games"
+
+if [ "$INSTALL_METHOD" = "LOCAL" ]
+then
+	POL_SetupWindow_browse "Please select the installation archive to install." "$TITLE installation"
+elif [ "$INSTALL_METHOD" = "DOWNLOAD" ]
+then
+	APP_ANSWER="$full_archive"
+fi
+
+# Install from archive
+POL_SetupWindow_wait "Installation in progress." "$TITLE installation"
+rm -rf "$WINEPREFIX/drive_c/games/*"
+extract "$full_archive" "$WINEPREFIX/drive_c/games/"
+[[ $? != 0 ]] && POL_Debug_Fatal
+
+# Install libraries
+POL_Call POL_Install_dxfullsetup
+POL_Call POL_Install_vcrun2005
+
+Set_Desktop "On"
+
+POL_Shortcut "Anno4.exe" "$TITLE"
+POL_Shortcut "Addon.exe" "$TITLE - Venice"
+
+mkdir -p "$WINEPREFIX/drive_c/users/$USER/Application Data/Ubisoft/Anno1404/Config" "$WINEPREFIX/drive_c/users/$USER/Application Data/Ubisoft/Anno1404Addon/Config"
+cat << EOF > "$WINEPREFIX/drive_c/users/$USER/Application Data/Ubisoft/Anno1404/Config/Engine.ini"
+<InitFile><ScreenXSize>2560</ScreenXSize>
+<ScreenYSize>1440</ScreenYSize>
+<ScreenDepth>32</ScreenDepth>
+<ScreenFormat>1</ScreenFormat>
+<RefreshRate>0</RefreshRate>
+<AspectRatio>0.000000</AspectRatio>
+<ResizableWindow>1</ResizableWindow>
+<NoWindowFrame>1</NoWindowFrame>
+<Gamma>1.000000</Gamma>
+<RE_Device>0</RE_Device>
+<RE_VSync>1</RE_VSync>
+<RE_Cloud>1</RE_Cloud>
+<RE_Framebuffer_Refraction>1</RE_Framebuffer_Refraction>
+<RE_TerrainRenderMode>0</RE_TerrainRenderMode>
+<UseDDSTextures>1</UseDDSTextures>
+<DirectXVersion>9</DirectXVersion>
+<EnableTextureMemoryManagement>1</EnableTextureMemoryManagement>
+<EnableModelMemoryManagement>1</EnableModelMemoryManagement>
+<PreloadCachedShaders>0</PreloadCachedShaders>
+<EnableRenderEngineScheduler>1</EnableRenderEngineScheduler>
+<QualityLevel>2</QualityLevel>
+<RE_AlphaToCoverage>0;0;0;0;0</RE_AlphaToCoverage>
+<RE_Anisotropic>0;0;1;2;1</RE_Anisotropic>
+<RE_Antialiasing>0;0;0;0;0</RE_Antialiasing>
+<RE_Borderline>1;1;1;2;1</RE_Borderline>
+<RE_Cloth>0;1;1;2;1</RE_Cloth>
+<RE_Effects>0;1;2;2;2</RE_Effects>
+<RE_Force>0;0;1;1;1</RE_Force>
+<RE_Lighting>1;1;1;2;1</RE_Lighting>
+<RE_Influence>0;0;0;0;0</RE_Influence>
+<RE_MaxObjectLOD>0;1;2;2;2</RE_MaxObjectLOD>
+<RE_NormalMapping>0;0;1;1;1</RE_NormalMapping>
+<RE_ParallaxMapping>0;0;0;1;0</RE_ParallaxMapping>
+<RE_PostEffects>0;0;1;2;1</RE_PostEffects>
+<RE_Reflection>0;0;1;1;1</RE_Reflection>
+<RE_Refraction>0;0;1;1;1</RE_Refraction>
+<RE_Scattering>1;1;2;2;2</RE_Scattering>
+<RE_Shadows>0;1;1;2;1</RE_Shadows>
+<RE_Terrain>0;1;2;2;2</RE_Terrain>
+<RE_TextureManager>2;1;0;0;0</RE_TextureManager>
+<RE_Water>1;2;3;4;3</RE_Water>
+<EnableUtilization>0</EnableUtilization>
+<EnableFPS>0</EnableFPS>
+<EnableGUIWarning>0</EnableGUIWarning>
+<EnableUndiscovered>1</EnableUndiscovered>
+<EnableAI>1</EnableAI>
+<LanguageTAG>eng</LanguageTAG>
+<Multithreading>1</Multithreading>
+<PreferLocalFiles>0</PreferLocalFiles>
+<EnableWatchThreads>1</EnableWatchThreads>
+<EnableFPPPreloading>0</EnableFPPPreloading>
+<PreloadAll>0</PreloadAll>
+<RecordCFGCache>0</RecordCFGCache>
+<ScriptFilename>Console.ini</ScriptFilename>
+<RenderTransportRoute>1</RenderTransportRoute>
+<MinimapRotation>1</MinimapRotation>
+<EnableTimeDisplay>1</EnableTimeDisplay>
+<EnableInfoMode>1</EnableInfoMode>
+<AutoSaveCount>3</AutoSaveCount>
+<GameSpeed>14</GameSpeed>
+<SaveReplay>1</SaveReplay>
+<AutoQuestReminder>1</AutoQuestReminder>
+<ProfileName></ProfileName>
+<HardwareCursor>1</HardwareCursor>
+<MouseScroll>10</MouseScroll>
+<KeyboardScroll>10</KeyboardScroll>
+<MouseSpeed>10</MouseSpeed>
+<LockCamera>1</LockCamera>
+<EnableZoom>1</EnableZoom>
+<CheckCameraDistance>1</CheckCameraDistance>
+<EnableConsole>1</EnableConsole>
+<TimePerChar>88</TimePerChar>
+<EnableFourthCamPosition>0</EnableFourthCamPosition>
+<MinimapTexResX>64</MinimapTexResX>
+<MinimapTexResY>64</MinimapTexResY>
+<EnableLargeFOV>0</EnableLargeFOV>
+<m_PickHighlightEnabled>1</m_PickHighlightEnabled>
+<VolumeMain>999</VolumeMain>
+<VolumeAmbiente>500</VolumeAmbiente>
+<VolumeSpeech>500</VolumeSpeech>
+<VolumeMusic>500</VolumeMusic>
+<VolumeSound>500</VolumeSound>
+<VolumeMsg>500</VolumeMsg>
+<VolumeAck>500</VolumeAck>
+<SoundSystem>1</SoundSystem>
+<SoundDriver>0</SoundDriver>
+<SoundEnableBink>0</SoundEnableBink>
+<FilterEventMsg>0</FilterEventMsg>
+<FilterEconomyMsg>0</FilterEconomyMsg>
+<FilterDiplomacyMsg>0</FilterDiplomacyMsg>
+<FilterResidentMsg>0</FilterResidentMsg>
+<FilterExplorationMsg>0</FilterExplorationMsg>
+<FilterResearchMsg>0</FilterResearchMsg>
+<FilterMilitaryMsg>0</FilterMilitaryMsg>
+<CheckSumEnabled>0</CheckSumEnabled>
+<StopOnCheckSumError>0</StopOnCheckSumError>
+<CheckSumErrorCount>2</CheckSumErrorCount>
+<IsLogFileOn>0</IsLogFileOn>
+<KIServerPort>5479</KIServerPort>
+<KIBuildLimitation>249</KIBuildLimitation>
+<RenderDebugBlock>0</RenderDebugBlock>
+<ShowAssertStatus>0</ShowAssertStatus>
+<DisableHPTimer>0</DisableHPTimer>
+<SyncTraceDisabled>0</SyncTraceDisabled>
+<WriteMiniDumps>2</WriteMiniDumps>
+<SyncTraceFolder>\\rds.local\DATA\QAPublic\synctraces\</SyncTraceFolder>
+<EnableNetworkEmulation>0</EnableNetworkEmulation>
+<ScreenshotFormat>0</ScreenshotFormat>
+<ScreenshotWidth>0</ScreenshotWidth>
+<ScreenshotHeight>0</ScreenshotHeight>
+<SaveGameCompressLevel>5</SaveGameCompressLevel>
+<UseBinarySavegames>1</UseBinarySavegames>
+<UbiSurveyTime>0</UbiSurveyTime>
+<UbiSurveyTimeStatus>0</UbiSurveyTimeStatus>
+<NetComEngineVersion>3</NetComEngineVersion>
+<EnableThreadLoading>0</EnableThreadLoading>
+<EnableSmoothLoading>1</EnableSmoothLoading>
+<m_waitForPlayerTimeout>5000</m_waitForPlayerTimeout>
+<kickPlayerTimeout>4000</kickPlayerTimeout>
+<IGNNewsDiff>0</IGNNewsDiff>
+<IGNAnchorDiff>0</IGNAnchorDiff>
+<IGNQuestsDiff>0</IGNQuestsDiff>
+<LockTeams>0</LockTeams>
+<MapExplored>0</MapExplored>
+<GameType>0</GameType>
+<Resourcen>0</Resourcen>
+<EnableEasyGui>1</EnableEasyGui>
+<EnableEasyStreet>1</EnableEasyStreet>
+<AlreadyUpdated>0</AlreadyUpdated>
+</InitFile>
+EOF
+cp "$WINEPREFIX/drive_c/users/$USER/Application Data/Ubisoft/Anno1404/Config/Engine.ini" "$WINEPREFIX/drive_c/users/$USER/Application Data/Ubisoft/Anno1404Addon/Config/Engine.ini"
+
+POL_SetupWindow_Close
+exit
