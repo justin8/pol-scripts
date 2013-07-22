@@ -10,7 +10,7 @@ ARCHIVE='MDK2 HD*' #Can end in *; scripts will match up the file correctly, alth
 
 POL_SetupWindow_Init
 POL_Debug_Init
-POL_SetupWindow_presentation "$TITLE" "<<<GAME-COMPANY>>>" "<<GAME-WEBSITE>>" "Justin8" "$PREFIX"
+POL_SetupWindow_presentation "$TITLE" "" "http://github.com/justin8/pol-scripts" "Justin8" "$PREFIX"
 
 POL_Wine_SelectPrefix "$PREFIX"
 POL_Wine_PrefixCreate #"1.6.0"
