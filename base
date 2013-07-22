@@ -8,5 +8,13 @@ find $WINEPREFIX/drive_c/ -type l -exec sh -c 'rm "{}";ln -s "$HOME/.PlayOnLinux
 }
 
 function extract {
-echo "1: $1 2: $2"
+ext=$(echo $1 | grep -Eo '\.[a-zA-Z]+$' | tr '[:upper:]' '[:lower:]')
+case $ext in
+	.rar)
+		unrar x "$1" "$2"
+		;;
+	*)
+		echo "Unsupported archive format."
+		;;
+esac
 }
