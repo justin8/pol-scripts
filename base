@@ -1,6 +1,6 @@
 #!/bin/bash
 ARCHIVES="/abachi/Game Installers/Windows"
-export full_archive="$(find "$ARCHIVES" -maxdepth 1 -iname "$ARCHIVE"|head -1)"
+full_archive="$(find "$ARCHIVES" -maxdepth 1 -iname "$ARCHIVE"|head -1)"
 
 function sandbox {
 mkdir -p "$HOME/.PlayOnLinux/shared-files"
