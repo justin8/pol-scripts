@@ -1,0 +1,49 @@
+#!/bin/bash
+[ "$PLAYONLINUX" = "" ] && exit 0
+source "$PLAYONLINUX/lib/sources"
+
+DIR="$(dirname "$(readlink -f "$0")")"
+TITLE='D&D Neverwinter'
+PREFIX='neverwinter'
+ARCHIVE='Neverwinter*'
+. $DIR/../base
+
+POL_SetupWindow_Init
+POL_Debug_Init
+POL_SetupWindow_presentation "$TITLE" "" "http://github.com/justin8/pol-scripts" "Justin8" "$PREFIX"
+
+POL_Wine_SelectPrefix "$PREFIX"
+POL_Wine_PrefixCreate #"1.6.0"
+
+Set_OS winxp
+
+sandbox
+
+POL_SetupWindow_InstallMethod "DOWNLOAD,LOCAL"
+mkdir -p "$WINEPREFIX/drive_c/games"
+
+if [ "$INSTALL_METHOD" = "LOCAL" ]
+then
+	POL_SetupWindow_browse "Please select the installation archive to install." "$TITLE installation"
+elif [ "$INSTALL_METHOD" = "DOWNLOAD" ]
+then
+	APP_ANSWER="$full_archive"
+fi
+
+# Install from archive
+POL_SetupWindow_wait "Installation in progress." "$TITLE installation"
+rm -rf "$WINEPREFIX/drive_c/games/*"
+extract "$full_archive" "$WINEPREFIX/drive_c/games/"
+[[ $? != 0 ]] && POL_Debug_Fatal
+
+# Install libraries
+POL_Call POL_Install_dxfullsetup
+POL_Call POL_Install_ie8
+POL_Wine_OverrideDLL "builtin" "dnsapi" # Required to be able to load game
+
+POL_Shortcut "Neverwinter.exe" "$TITLE"
+
+POL_Wine_reboot
+POL_SetupWindow_message "Remember to click options at the top of the launcher and set safe mode to on, and disable on-demand patching" "$TITLE"
+POL_SetupWindow_Close
+exit
