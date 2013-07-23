@@ -16,6 +16,9 @@ case $ext in
 	.tgz|.txz|.tlz)
 		tar -C "$2" -xvf "$1" >> /tmp/test
 		;;
+	.exe)
+		POL_Wine start /unix "$1"
+		;;
 	*)
 		echo "Unsupported archive format."
 		;;
