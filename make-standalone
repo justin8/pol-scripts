@@ -1,0 +1,25 @@
+#!/bin/bash
+
+if [[ $# != 1 ]] || [[ ! -d "$1" ]] || [[ ! -w "$1" ]]
+then
+	echo "Please specify a valid output directory"
+	exit 1
+fi
+
+DIR="$(dirname "$(readlink "$0")")"
+
+for game in $DIR/Games/*
+do
+	output="$1/$(basename "$game")"
+	echo "Creating standalone script for $(basename "$game")..."
+	echo -n "" > "$output"
+	while read line
+	do
+		if echo $line | grep -q '$DIR/../base'
+		then
+			cat "$DIR/base" | sed 's:#!/bin/bash::g' >> "$output"
+		else
+			echo "$line" >> "$output"
+		fi
+	done < "$game"
+done
