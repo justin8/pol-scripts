@@ -1,0 +1,80 @@
+#!/bin/bash
+[ "$PLAYONLINUX" = "" ] && exit 0
+source "$PLAYONLINUX/lib/sources"
+
+DIR="$(dirname "$(readlink -f "$0")")"
+TITLE='FarCry 3: Blood Dragon'
+PREFIX='fc3_blood_dragon'
+ARCHIVE='Far Cry 3 Blood Dragon*' #Can end in *; scripts will match up the file correctly, although only .rar is currently supported
+. $DIR/../base
+
+POL_SetupWindow_Init
+POL_Debug_Init
+POL_SetupWindow_presentation "$TITLE" "" "http://github.com/justin8/pol-scripts" "Justin8" "$PREFIX"
+
+POL_Wine_SelectPrefix "$PREFIX"
+POL_Wine_PrefixCreate #"1.6.0"
+
+Set_OS win7
+
+sandbox
+
+POL_SetupWindow_InstallMethod "DOWNLOAD,LOCAL"
+mkdir -p "$WINEPREFIX/drive_c/games"
+
+if [ "$INSTALL_METHOD" = "LOCAL" ]
+then
+	POL_SetupWindow_browse "Please select the installation archive to install." "$TITLE installation"
+elif [ "$INSTALL_METHOD" = "DOWNLOAD" ]
+then
+	APP_ANSWER="$full_archive"
+fi
+
+# Install from archive
+POL_SetupWindow_wait "Installation in progress." "$TITLE installation"
+rm -rf "$WINEPREFIX/drive_c/games/*"
+extract "$APP_ANSWER" "$WINEPREFIX/drive_c/games/"
+[[ $? != 0 ]] && POL_Debug_Fatal
+#POL_Wine start /unix "$WINEPREFIX/drive_c/games/_regsetup.exe"
+
+# Install libraries
+POL_Call POL_Install_dxfullsetup
+POL_Call POL_Install_xact
+POL_Call POL_Install_d3dx11
+POL_Call POL_Install_vcrun2010
+
+POL_Wine_Direct3D "VideoMemorySize" "2048"
+
+#             exe name     title  icon executable arguments
+POL_Shortcut "fc3_blooddragon.exe" "$TITLE"
+
+mkdir -p "$WINEPREFIX/drive_c/users/$USER/My Documents/My Games/Far Cry 3 Blood Dragon"
+cat << EOF > "$WINEPREFIX/drive_c/users/$USER/My Documents/My Games/Far Cry 3 Blood Dragon/GamerProfile.xml"
+<GamerProfile>
+	<SoundProfile MusicEnabled="1" MasterVolume="100" Language="english" />
+	<RenderProfile MSAALevel="0" AlphaToCoverage="1" SSAOLevel="1" SDSM="0" ResolutionX="2560" ResolutionY="1440" Quality="optimal" QualityEditor="editor_ps3" Fullscreen="0" Borderless="0" UseD3D11="0" D3D11MultithreadedRendering="0" WidescreenLetterbox="0" UseWidescreenFOV="1" FOVScaleFactor="0.9975" EnableSubResolution="0" SubResolutionX="960" SubResolutionY="540" VSync="0" RefreshRate="0" DisableMip0Loading="0" GPUMaxBufferedFrames="1" ShowFPS="0" Brightness="1" Contrast="1" GammaRamp="1" AllowAsynchShaderLoading="1">
+		<CustomQuality>
+			<quality ResolutionX="2560" ResolutionY="1440" EnvironmentQuality="high" AntiPortalQuality="default" PortalQuality="medium" PostFxQuality="medium" TextureQuality="high" TextureResolutionQuality="high" WaterQuality="high" DepthPassQuality="high" VegetationQuality="high" TerrainQuality="high" GeometryQuality="veryhigh" AmbientQuality="high" DeferredAmbientQuality="high" ShadowQuality="high" EditorQuality="" Hdr="1" HdrFP32="0" ReflectionHdr="1" EnableVertexBinding="1" id="custom" />
+		</CustomQuality>
+	</RenderProfile>
+	<NetworkProfile VoiceChatEnabled="1" CustomMapMaxUploadRateInBitsOnline="10240000" OnlineEnginePort="9000" OnlineServicePort="9001" FileTransferHostPort="9002" FileTransferClientPort="9003" LanHostBroadcastPort="9004" LanClientBroadcastPort="9005" ScanFreePorts="1" ScanPortRange="1000" ScanPortStart="9000" SessionProvider="" MaxUploadInbpsOnline="10240000">
+		<Accounts />
+	</NetworkProfile>
+	<GameProfile />
+	<ProfileSpecificGameProfile Sensitivity="1" Invert_x="0" Invert_y="0" DefaultFlickFireDirection_y="0" UseMouseSmooth="1" Smoothness="0.2" Smoothness_Ironsight="0.2" HelpCrosshair="1" Gamepad_vibration="1" UseRoadSignHilight="1" UseSubtitles="1" TaggingEnabled="1" WikiUpdatedEnabled="1" CollectibleUpdatedEnabled="1" TutorialUpdatedEnabled="1" ObjectiveReminderEnabled="1" CraftingTipsEnabled="1" DisplayXPEnabled="1" DetectionIndicatorEnabled="1" HitIndicatorEnabled="1" GrenadeIndicatorEnabled="1" UseAmbx="0" UseGamePad="0" GamepadAnswered="0" Autosave="1" Machete="0" IronsightToggleMode="0">
+		<FireConfig QualitySetting="VeryHigh" />
+	</ProfileSpecificGameProfile>
+	<RealTreeProfile Quality="VeryHigh" />
+	<EngineProfile>
+		<PhysicConfig QualitySetting="VeryHigh" />
+		<QcConfig GatherFPS="1" GatherAICnt="1" GatherDialogs="0" IsQcTester="0" />
+		<InputConfig />
+		<ZoneConfig />
+	</EngineProfile>
+	<UplayProfile LockString="" />
+</GamerProfile>
+EOF
+
+POL_Wine_reboot
+POL_SetupWindow_Close
+exit
