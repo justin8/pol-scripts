@@ -5,6 +5,8 @@ full_archive="$(find "$ARCHIVES" -maxdepth 1 -iname "$ARCHIVE"|head -1)"
 function sandbox {
 mkdir -p "$HOME/.PlayOnLinux/shared-files"
 find $WINEPREFIX/drive_c/ -type l -exec sh -c 'rm "{}";ln -s "$HOME/.PlayOnLinux/shared-files/$(basename "{}")" "{}"' \;
+rm -rf "$WINEPREFIX/drive_c/users/$USER/Application Data"
+ln -s "$HOME/.PlayOnLinux/shared-files/Application Data" "$WINEPREFIX/drive_c/users/$USER/Application Data"
 }
 
 function extract {
