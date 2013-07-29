@@ -1,0 +1,51 @@
+#!/bin/bash
+[ "$PLAYONLINUX" = "" ] && exit 0
+source "$PLAYONLINUX/lib/sources"
+
+DIR="$(dirname "$(readlink -f "$0")")"
+TITLE='Warcraft 3  Reign of Chaos & The Frozen Throne'
+PREFIX='warcraft3'
+ARCHIVE='Warcraft 3*' #Can end in *; scripts will match up the file correctly, although only .rar is currently supported
+. $DIR/../base
+
+POL_SetupWindow_Init
+POL_Debug_Init
+POL_SetupWindow_presentation "$TITLE" "" "http://github.com/justin8/pol-scripts" "Justin8" "$PREFIX"
+
+POL_Wine_SelectPrefix "$PREFIX"
+POL_Wine_PrefixCreate #"1.6.0"
+
+Set_OS winxp
+
+sandbox
+
+POL_SetupWindow_InstallMethod "DOWNLOAD,LOCAL"
+mkdir -p "$WINEPREFIX/drive_c/games"
+
+if [ "$INSTALL_METHOD" = "LOCAL" ]
+then
+	POL_SetupWindow_browse "Please select the installation archive to install." "$TITLE installation"
+elif [ "$INSTALL_METHOD" = "DOWNLOAD" ]
+then
+	APP_ANSWER="$full_archive"
+fi
+
+# Install from archive
+POL_SetupWindow_wait "Installation in progress." "$TITLE installation"
+rm -rf "$WINEPREFIX/drive_c/games/*"
+extract "$APP_ANSWER" "$WINEPREFIX/drive_c/games/"
+[[ $? != 0 ]] && POL_Debug_Fatal
+POL_Wine start /unix "$WINEPREFIX/drive_c/games/Warcraft 3/regsetup.exe"
+
+# Install libraries
+POL_Call POL_Install_dxfullsetup
+
+POL_Shortcut "Frozen Throne.exe" "Warcraft III: The Frozen Throne" "" "-window"
+POL_Shortcut "Warcraft III.exe" "Warcraft III: Reign of Chaos" "" "-window"
+
+POL_Shortcut_QuietDebug "Warcraft III: The Frozen Throne"
+POL_Shortcut_QuietDebug "Warcraft III: Reign of Chaos"
+
+POL_Wine_reboot
+POL_SetupWindow_Close
+exit
