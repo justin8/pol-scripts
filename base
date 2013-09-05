@@ -23,6 +23,7 @@ case $ext in
 		;;
 	*)
 		echo "Unsupported archive format."
+		exit 1
 		;;
 esac
 }
