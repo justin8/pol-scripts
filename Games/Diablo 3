@@ -1,0 +1,50 @@
+#!/bin/bash
+[ "$PLAYONLINUX" = "" ] && exit 0
+source "$PLAYONLINUX/lib/sources"
+
+DIR="$(dirname "$(readlink -f "$0")")"
+TITLE='Diablo III'
+PREFIX='diablo3'
+ARCHIVE='Diablo III*' #Can end in *; scripts will match up the file correctly, although only .rar is currently supported
+. $DIR/../base
+
+POL_SetupWindow_Init
+POL_Debug_Init
+POL_SetupWindow_presentation "$TITLE" "" "http://github.com/justin8/pol-scripts" "Justin8" "$PREFIX"
+
+POL_Wine_SelectPrefix "$PREFIX"
+POL_Wine_PrefixCreate #"1.6.0"
+
+Set_OS win7
+POL_System_SetArch "x86"
+
+sandbox
+
+POL_SetupWindow_InstallMethod "DOWNLOAD,LOCAL"
+mkdir -p "$WINEPREFIX/drive_c/games"
+
+if [ "$INSTALL_METHOD" = "LOCAL" ]
+then
+	POL_SetupWindow_browse "Please select the installation archive to install." "$TITLE installation"
+elif [ "$INSTALL_METHOD" = "DOWNLOAD" ]
+then
+	APP_ANSWER="$full_archive"
+fi
+
+# Install from archive
+POL_SetupWindow_wait "Installation in progress." "$TITLE installation"
+rm -rf "$WINEPREFIX/drive_c/games/*"
+extract "$APP_ANSWER" "$WINEPREFIX/drive_c/games/"
+[[ $? != 0 ]] && POL_Debug_Fatal
+#POL_Wine start /unix "$WINEPREFIX/drive_c/games/_regsetup.exe"
+
+# Install libraries
+POL_Call POL_Install_dxfullsetup
+
+#             exe name     title  icon executable arguments
+POL_Shortcut "Diablo III.exe" "$TITLE" "" ""
+POL_Shortcut_InsertBeforeWine "$TITLE" '#taskset -pc 0 $$'
+
+POL_Wine_reboot
+POL_SetupWindow_Close
+exit
