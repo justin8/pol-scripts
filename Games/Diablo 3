@@ -42,7 +42,7 @@ extract "$APP_ANSWER" "$WINEPREFIX/drive_c/games/"
 POL_Call POL_Install_dxfullsetup
 
 #             exe name     title  icon executable arguments
-POL_Shortcut "Diablo III.exe" "$TITLE" "" ""
+POL_Shortcut "Diablo III Launcher.exe" "$TITLE" "" ""
 POL_Shortcut_InsertBeforeWine "$TITLE" '#taskset -pc 0 $$'
 
 POL_Wine_reboot
