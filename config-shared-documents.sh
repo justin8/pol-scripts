@@ -1,13 +1,16 @@
 #!/bin/bash
 
-if [[ -d $1 ]] && [[ -d $1/drive_c ]]
+if [[ ! -d $1 ]] && [[ ! -d $1/drive_c ]]
 then
-	mkdir -p "$HOME/.PlayOnLinux/shared-files/"{'Application Data','Desktop','My Documents','My Music','My Pictures','My Videos'}
-	find "$1/drive_c/" -type l -exec sh -c 'rm "{}";ln -s "$HOME/.PlayOnLinux/shared-files/$(basename "{}")" "{}"' \;
-	rm -rf "$1/drive_c/users/$USER/Application Data"
-	ln -s "$HOME/.PlayOnLinux/shared-files/Application Data" "$1/drive_c/users/$USER/Application Data"
-	exit 0
+	echo "Please specify a wine prefix as the only argument"
+	echo "e.g. $(basename "$0") ~/.PlayOnLinux/wineprefix/stardewvalley"
+	exit 1
 fi
 
-echo "Please specify a wine prefix as the only argument"
-exit 1
+echo mkdir -p "$HOME/.PlayOnLinux/shared-files/"{'Application Data','Desktop','My Documents','My Music','My Pictures','My Videos'}
+for FOLDER in 'Application Data' 'Desktop' 'My Documents' 'My Music' 'My Pictures' 'My Videos'; do
+	echo mkdir -p "$HOME/.PlayOnLinux/shared-files/$FOLDER"
+	find "$1/drive_c/users/" -name "$FOLDER" -exec sh -c 'echo rm "{}";echo ln -s "$HOME/.PlayOnLinux/shared-files/$(basename "{}")" "{}"' \;
+done
+
+exit 0
