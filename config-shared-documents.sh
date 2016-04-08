@@ -7,10 +7,10 @@ then
 	exit 1
 fi
 
-echo mkdir -p "$HOME/.PlayOnLinux/shared-files/"{'Application Data','Desktop','My Documents','My Music','My Pictures','My Videos'}
+mkdir -p "$HOME/.PlayOnLinux/shared-files/"{'Application Data','Desktop','My Documents','My Music','My Pictures','My Videos'}
 for FOLDER in 'Application Data' 'Desktop' 'My Documents' 'My Music' 'My Pictures' 'My Videos'; do
-	echo mkdir -p "$HOME/.PlayOnLinux/shared-files/$FOLDER"
-	find "$1/drive_c/users/" -name "$FOLDER" -exec sh -c 'echo rm "{}";echo ln -s "$HOME/.PlayOnLinux/shared-files/$(basename "{}")" "{}"' \;
+	mkdir -p "$HOME/.PlayOnLinux/shared-files/$FOLDER"
+	find "$1/drive_c/users/" -name "$FOLDER" -exec sh -c 'rm -rf "{}";ln -s "$HOME/.PlayOnLinux/shared-files/$(basename "{}")" "{}"' \;
 done
 
 exit 0
